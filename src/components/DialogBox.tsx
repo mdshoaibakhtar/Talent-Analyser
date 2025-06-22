@@ -9,13 +9,13 @@ import { Divider } from '@mui/material';
 
 export default function DialogBox({ open, onClose, data }: { open: boolean; onClose: () => void; data: any }) {
     // Provide default values to avoid errors when data is {}
+    console.log('DialogBox data:', data);
     const summary = data?.summary ?? '';
     const matching_score = data?.matching_score ?? 0;
     const matching = data?.matching ?? {};
     const missing = data?.missing ?? {};
     const note_of_improvement = data?.note_of_improvement ?? [];
 
-    console.log('DialogBox data:', data);
     return (
         <React.Fragment>
             <Dialog
@@ -29,7 +29,7 @@ export default function DialogBox({ open, onClose, data }: { open: boolean; onCl
                     id="alert-dialog-title"
                     sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 2 }}
                 >
-                    {"Use Google's location service?"}
+                    {"Analysis Report"}
                     <Button
                         onClick={onClose}
                         sx={{ minWidth: 0, padding: 0, ml: 2 }}
@@ -147,10 +147,7 @@ export default function DialogBox({ open, onClose, data }: { open: boolean; onCl
                 {/* Note of Improvements - moved to the end */}
                 <Divider />
                 <DialogActions sx={{ justifyContent: 'flex-end' }}>
-                    <Button onClick={onClose}>Disagree</Button>
-                    <Button onClick={onClose} autoFocus>
-                        Agree
-                    </Button>
+                    <Button onClick={onClose}>Close</Button>
                 </DialogActions>
             </Dialog>
         </React.Fragment>
