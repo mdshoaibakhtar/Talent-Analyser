@@ -10,6 +10,7 @@ run = ["sh", "-c", "npm run dev"]
 [[ports]]
 localPort = 5173
 externalPort = 80
+exposeLocalhost = true
 
 [[ports]]
 localPort = 5174
@@ -18,9 +19,9 @@ externalPort = 3000
 [workflows]
 
 [[workflows.workflow]]
-name = "Run"
-author = 43833926
+name = "Run dev"
 mode = "sequential"
+author = 43833926
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
