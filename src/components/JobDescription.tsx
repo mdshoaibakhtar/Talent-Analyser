@@ -7,7 +7,6 @@ import {
   Button,
   Tabs,
   Tab,
-  CircularProgress,
   Alert,
 } from "@mui/material";
 import {
@@ -20,7 +19,13 @@ import axios from "axios";
 import { useAppContext } from "../context/AppContext";
 import { apiEndPoint, API_ENDPOINTS } from "./Constant";
 
-const JobDescription: React.FC = () => {
+
+interface JobDescription {
+  uploadedJobDescription: { file_name: string; base64: string };
+  setUploadedJobDescription: (params: { file_name: string; base64: string }) => void;
+}
+
+const JobDescription: React.FC<JobDescription> = ({ uploadedJobDescription, setUploadedJobDescription }) => {
   const { state, dispatch } = useAppContext();
   const [activeTab, setActiveTab] = useState(0);
   const [urlInput, setUrlInput] = useState("");
@@ -61,57 +66,45 @@ const JobDescription: React.FC = () => {
     }
   };
 
-  const processPdfFile = async (file: File) => {
+  const processResumeFile = async (file: File) => {
+
+    // dispatch({ type: "ADD_RESUME", payload: resume });
     dispatch({
       type: "SET_LOADING",
-      payload: { key: "extractingJD", value: true },
+      payload: { key: "uploadingResume", value: true },
     });
 
     try {
       const reader = new FileReader();
       reader.onload = async () => {
         let base64String = reader.result as string;
-        base64String = base64String.replace(
-          /^data:application\/pdf;base64,/,
-          "",
-        );
-
+        base64String = base64String
+          .replace(/^data:application\/pdf;base64,/, "");
         try {
-          const response = await axios.post(
-            apiEndPoint + API_ENDPOINTS.EXTRACT_JD,
-            {
-              file_name: file.name,
-              base64_data: base64String,
-            },
-          );
-
-          dispatch({
-            type: "SET_JOB_DESCRIPTION",
-            payload: { data: response.data.response, source: "pdf" },
-          });
+          setUploadedJobDescription({ 'file_name': file.name, 'base64': base64String });
         } catch (error) {
-          setError("Failed to extract job description from PDF");
-          console.error("Error extracting JD:", error);
+          console.error("Error uploading job description:", error);
         }
       };
       reader.readAsDataURL(file);
     } catch (error) {
-      setError("Error processing PDF file");
       console.error("Error processing file:", error);
     } finally {
       dispatch({
         type: "SET_LOADING",
-        payload: { key: "extractingJD", value: false },
+        payload: { key: "uploadingResume", value: false },
       });
     }
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (file && file.type === "application/pdf") {
-      processPdfFile(file);
-    } else {
-      setError("Please upload a PDF file");
+    let files = acceptedFiles[0];
+    if (files && files.type === "application/pdf" ||
+      files.type ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+      files.name.match(/\.(pdf|docx)$/i)
+    ) {
+      processResumeFile(files);
     }
   }, []);
 
@@ -151,7 +144,7 @@ const JobDescription: React.FC = () => {
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
               placeholder="https://example.com/job-posting"
-              sx={{ mb: 4, mt:1 }}
+              sx={{ mb: 4, mt: 1 }}
             />
             <Button
               variant="contained"
@@ -190,12 +183,13 @@ const JobDescription: React.FC = () => {
           </Paper>
         )}
 
-        {state.loading.extractingJD && (
-          <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-            <CircularProgress size={24} sx={{ mr: 2 }} />
-            <Typography>Processing job description...</Typography>
+        <Paper sx={{ overflow: "hidden" }}>
+          <Box sx={{ p: 3, borderBottom: "1px solid", borderColor: "divider" }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              {uploadedJobDescription.file_name || "Uploaded Job Description"}
+            </Typography>
           </Box>
-        )}
+        </Paper>
 
         {error && (
           <Alert severity="error" sx={{ mt: 2 }}>

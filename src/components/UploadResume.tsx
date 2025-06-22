@@ -3,40 +3,32 @@ import {
   Box,
   Typography,
   Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
-  Chip,
   CircularProgress,
 } from "@mui/material";
 import {
   CloudUpload as UploadIcon,
-  Description as FileIcon,
-  CheckCircle as CheckIcon,
-  Delete as DeleteIcon,
-  DragIndicator as DragIcon,
 } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
 import { useAppContext } from "../context/AppContext";
-import axios from "axios";
-import { apiEndPoint, API_ENDPOINTS, prompt } from "./Constant";
+// import axios from "axios";
+// import { apiEndPoint, API_ENDPOINTS, prompt } from "./Constant";
 
-const UploadResume: React.FC = () => {
+interface resumeObject{
+  file_name: string;
+  base64: string;
+}
+
+interface Resume {
+  setUploadedResume: (params: resumeObject) => void;
+  uploadedResume: resumeObject
+}
+
+const UploadResume: React.FC<Resume> = ({ setUploadedResume, uploadedResume }) => {
   const { state, dispatch } = useAppContext();
 
   const processResumeFile = async (file: File) => {
-    const fileId = `${Date.now()}-${file.name}`;
 
-    const resume = {
-      id: fileId,
-      file,
-      extractedData: "",
-      base64Data: "",
-    };
-
-    dispatch({ type: "ADD_RESUME", payload: resume });
+    // dispatch({ type: "ADD_RESUME", payload: resume });
     dispatch({
       type: "SET_LOADING",
       payload: { key: "uploadingResume", value: true },
@@ -48,25 +40,22 @@ const UploadResume: React.FC = () => {
         let base64String = reader.result as string;
         base64String = base64String
           .replace(/^data:application\/pdf;base64,/, "")
-          .replace(
-            /^data:application\/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,/,
-            "",
-          );
 
         try {
-          const response = await axios.post(
-            apiEndPoint + API_ENDPOINTS.UPLOAD_RESUME,
-            {
-              file_name: file.name,
-              prompt: prompt,
-              base64_data: base64String,
-            },
-          );
+          setUploadedResume({ 'file_name': file.name, 'base64': base64String });
+          // const response = await axios.post(
+          //   apiEndPoint + API_ENDPOINTS.UPLOAD_RESUME,
+          //   {
+          //     file_name: file.name,
+          //     prompt: prompt,
+          //     base64_data: base64String,
+          //   },
+          // );
 
-          dispatch({
-            type: "UPDATE_RESUME_DATA",
-            payload: { id: fileId, data: response.data.response },
-          });
+          // dispatch({
+          //   type: "UPDATE_RESUME_DATA",
+          //   payload: { id: fileId, data: response.data.response },
+          // });
         } catch (error) {
           console.error("Error uploading resume:", error);
         }
@@ -83,16 +72,14 @@ const UploadResume: React.FC = () => {
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    acceptedFiles.forEach((file) => {
-      if (
-        file.type === "application/pdf" ||
-        file.type ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-        file.name.match(/\.(pdf|docx)$/i)
-      ) {
-        processResumeFile(file);
-      }
-    });
+    let files = acceptedFiles[0];
+    if (files && files.type === "application/pdf" ||
+      files.type ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+      files.name.match(/\.(pdf|docx)$/i)
+    ) {
+      processResumeFile(files);
+    }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -102,13 +89,8 @@ const UploadResume: React.FC = () => {
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
         [".docx"],
     },
-    multiple: true,
+    multiple: false,
   });
-
-  const removeResume = (id: string) => {
-    console.log(id)
-    // This would need a proper REMOVE_RESUME action in the reducer
-  };
 
   return (
     <Box>
@@ -176,77 +158,13 @@ const UploadResume: React.FC = () => {
         )}
       </Paper>
 
-      {state.resumes.length > 0 && (
-        <Paper sx={{ overflow: "hidden" }}>
-          <Box sx={{ p: 3, borderBottom: "1px solid", borderColor: "divider" }}>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              Uploaded Resumes ({state.resumes.length})
-            </Typography>
-          </Box>
-          <List sx={{ p: 0 }}>
-            {state.resumes.map((resume, index) => (
-              <ListItem
-                key={resume.id}
-                sx={{
-                  py: 2,
-                  px: 3,
-                  borderBottom:
-                    index < state.resumes.length - 1 ? "1px solid" : "none",
-                  borderColor: "divider",
-                  "&:hover": { bgcolor: "action.hover" },
-                }}
-              >
-                <ListItemIcon>
-                  <DragIcon sx={{ color: "text.disabled" }} />
-                </ListItemIcon>
-                <ListItemIcon>
-                  {resume.extractedData ? (
-                    <CheckIcon sx={{ color: "success.main" }} />
-                  ) : (
-                    <FileIcon sx={{ color: "text.secondary" }} />
-                  )}
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                      {resume.file.name}
-                    </Typography>
-                  }
-                  secondary={
-                    <Box
-                      sx={{
-                        mt: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                      }}
-                    >
-                      <Chip
-                        size="small"
-                        label={
-                          resume.extractedData ? "Processed" : "Processing..."
-                        }
-                        color={resume.extractedData ? "success" : "default"}
-                        sx={{ fontWeight: 500 }}
-                      />
-                      <Typography variant="caption" color="text.secondary">
-                        {(resume.file.size / 1024 / 1024).toFixed(2)} MB
-                      </Typography>
-                    </Box>
-                  }
-                />
-                <IconButton
-                  edge="end"
-                  onClick={() => removeResume(resume.id)}
-                  sx={{ color: "error.main" }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </ListItem>
-            ))}
-          </List>
-        </Paper>
-      )}
+      <Paper sx={{ overflow: "hidden" }}>
+        <Box sx={{ p: 3, borderBottom: "1px solid", borderColor: "divider" }}>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            {uploadedResume.file_name || "Uploaded Resume"}
+          </Typography>
+        </Box>
+      </Paper>
     </Box>
   );
 };

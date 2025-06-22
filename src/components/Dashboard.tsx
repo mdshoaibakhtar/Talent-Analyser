@@ -9,7 +9,7 @@ import {
     CardContent,
     Avatar,
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import {
     TrendingUp,
     People,
@@ -23,7 +23,15 @@ import CompareResumes from './CompareResumes';
 import ResultsSidebar from './ResultsSidebar';
 import Footer from './Footer';
 
+interface files{
+    file_name: string;
+    base64: string;
+}
+
 const Dashboard: React.FC = () => {
+  const [uploadedResume, setUploadedResume] = useState<files>({'file_name':'', 'base64':''});
+  const [uploadedJobDescription, setUploadedJobDescription] = useState<files>({'file_name':'', 'base64':''});
+
 
     const stats = [
         { label: 'Resumes Analyzed', value: '1,247', icon: Assignment, color: '#6366f1' },
@@ -31,6 +39,8 @@ const Dashboard: React.FC = () => {
         { label: 'Active Candidates', value: '456', icon: People, color: '#f59e0b' },
         { label: 'Success Rate', value: '94%', icon: Analytics, color: '#ec4899' },
     ];
+
+    // console.log(uploadedResume)
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default' }}>
@@ -98,7 +108,7 @@ const Dashboard: React.FC = () => {
                                     boxShadow: '0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
                                 }
                             }}>
-                                <UploadResume />
+                                <UploadResume setUploadedResume={setUploadedResume} uploadedResume={uploadedResume}/>
                             </Paper>
                         </Grid>
 
@@ -110,7 +120,7 @@ const Dashboard: React.FC = () => {
                                     boxShadow: '0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
                                 }
                             }}>
-                                <JobDescription />
+                                <JobDescription uploadedJobDescription={uploadedJobDescription} setUploadedJobDescription={setUploadedJobDescription} />
                             </Paper>
                         </Grid>
                     </Grid>
@@ -122,7 +132,7 @@ const Dashboard: React.FC = () => {
                                 boxShadow: '0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
                             }
                         }}>
-                            <CompareResumes />
+                            <CompareResumes uploadedJobDescription={uploadedJobDescription} uploadedResume={uploadedResume} />
                         </Paper>
                     </Grid>
                 </Grid>

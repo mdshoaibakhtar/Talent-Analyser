@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   Chip,
-  Alert,
   CircularProgress,
 } from '@mui/material';
 import {
@@ -13,49 +12,37 @@ import {
   Analytics as AnalyticsIcon,
   TrendingUp as TrendingUpIcon,
 } from '@mui/icons-material';
-import { useAppContext } from '../context/AppContext';
-import axios from 'axios';
-import { apiEndPoint, API_ENDPOINTS } from './Constant';
+import { useState } from 'react';
+import { apiEndPoint, prompt } from './Constant';
 
-const CompareResumes: React.FC = () => {
-  const { state, dispatch } = useAppContext();
+interface CompareInterface {
+  uploadedJobDescription: { file_name: string; base64: string };
+  uploadedResume: { file_name: string; base64: string };
+}
 
+const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, uploadedResume }) => {
+  const [comparing, setComparing] = useState(false);
   const handleCompare = async () => {
-    if (state.resumes.length === 0 || !state.jobDescription) {
+    if (!uploadedResume.base64 || !uploadedJobDescription.base64) {
       return;
     }
-
-    dispatch({ type: 'SET_LOADING', payload: { key: 'comparing', value: true } });
-
+    setComparing(true);
     try {
-      const resumeData = state.resumes
-        .filter(resume => resume.extractedData)
-        .map(resume => resume.extractedData)
-        .join('\n\n--- Next Resume ---\n\n');
-
-      const response = await axios.post(apiEndPoint + API_ENDPOINTS.FIND_DIFF, {
-        resume_data: resumeData,
-        job_description: state.jobDescription.data
-      });
-
-      dispatch({
-        type: 'SET_COMPARISON_RESULT',
-        payload: response.data.response
-      });
-
-      if (!state.sidebarOpen) {
-        dispatch({ type: 'TOGGLE_SIDEBAR' });
-      }
+      const axios = (await import('axios')).default;
+      await axios.post(apiEndPoint + '/data-analysis', {
+        resume_base64: uploadedResume.base64,
+        jd_base64: uploadedJobDescription.base64,
+        prompt: prompt
+      }).then((response) => {
+        console.log('Analysis response:', response.data);
+      })
+      // handle response as needed
     } catch (error) {
-      console.error('Error comparing resumes:', error);
+      // handle error as needed
     } finally {
-      dispatch({ type: 'SET_LOADING', payload: { key: 'comparing', value: false } });
+      setComparing(false);
     }
-  };
-
-  const canCompare = state.resumes.some(r => r.extractedData) && state.jobDescription;
-  const processedResumesCount = state.resumes.filter(r => r.extractedData).length;
-
+  }
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
@@ -67,14 +54,14 @@ const CompareResumes: React.FC = () => {
         </Typography>
       </Box>
 
-      <Card sx={{ 
+      <Card sx={{
         background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
         border: '1px solid',
         borderColor: 'divider',
         mb: 3
       }}>
         <CardContent sx={{ p: 4, textAlign: 'center' }}>
-          <Box sx={{ 
+          <Box sx={{
             background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
             borderRadius: '50%',
             width: 80,
@@ -89,26 +76,26 @@ const CompareResumes: React.FC = () => {
           </Box>
 
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-            Ready to analyze {processedResumesCount} resume{processedResumesCount !== 1 ? 's' : ''}
+            Ready to analyze {uploadedResume.file_name}
           </Typography>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mb: 3 }}>
-            <Chip 
+            <Chip
               icon={<TrendingUpIcon />}
-              label="AI-Powered" 
-              color="primary" 
+              label="AI-Powered"
+              color="primary"
               variant="outlined"
               sx={{ fontWeight: 500 }}
             />
-            <Chip 
-              label="Smart Matching" 
-              color="secondary" 
+            <Chip
+              label="Smart Matching"
+              color="secondary"
               variant="outlined"
               sx={{ fontWeight: 500 }}
             />
           </Box>
 
-          {!canCompare && (
+          {/* {!canCompare && (
             <Alert 
               severity="info" 
               sx={{ 
@@ -119,15 +106,15 @@ const CompareResumes: React.FC = () => {
             >
               Please upload at least one resume and a job description to start analysis
             </Alert>
-          )}
+          )} */}
 
           <Button
             variant="contained"
             size="large"
             onClick={handleCompare}
-            disabled={!canCompare || state.loading.comparing}
-            startIcon={state.loading.comparing ? <CircularProgress size={20} color="inherit" /> : <CompareIcon />}
-            sx={{ 
+            disabled={uploadedResume.file_name === '' || uploadedJobDescription.file_name === ''}
+            startIcon={comparing ? <CircularProgress size={20} color="inherit" /> : <CompareIcon />}
+            sx={{
               py: 1.5,
               px: 4,
               fontSize: '1.1rem',
@@ -135,10 +122,10 @@ const CompareResumes: React.FC = () => {
               minWidth: 180,
             }}
           >
-            {state.loading.comparing ? 'Analyzing...' : 'Start Analysis'}
+            {comparing ? 'Analyzing...' : 'Start Analysis'}
           </Button>
 
-          {state.comparisonResult && (
+          {/* {state.comparisonResult && (
             <Alert 
               severity="success" 
               sx={{ 
@@ -149,7 +136,7 @@ const CompareResumes: React.FC = () => {
             >
               ✨ Analysis complete! Check the results panel for detailed insights.
             </Alert>
-          )}
+          )} */}
         </CardContent>
       </Card>
     </Box>
