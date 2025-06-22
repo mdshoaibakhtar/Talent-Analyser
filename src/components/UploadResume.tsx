@@ -2,26 +2,27 @@
 import React, { useCallback } from 'react';
 import {
   Box,
-  Paper,
   Typography,
+  Paper,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   IconButton,
-  CircularProgress,
-  Alert,
   Chip,
+  CircularProgress,
+  LinearProgress,
 } from '@mui/material';
 import {
   CloudUpload as UploadIcon,
   Description as FileIcon,
-  Delete as DeleteIcon,
   CheckCircle as CheckIcon,
+  Delete as DeleteIcon,
+  DragIndicator as DragIcon,
 } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
 import { useAppContext } from '../context/AppContext';
+import axios from 'axios';
 import { apiEndPoint, API_ENDPOINTS, prompt } from './Constant';
 
 const UploadResume: React.FC = () => {
@@ -30,7 +31,6 @@ const UploadResume: React.FC = () => {
   const processResumeFile = async (file: File) => {
     const fileId = `${Date.now()}-${file.name}`;
     
-    // Add resume to state immediately
     const resume = {
       id: fileId,
       file,
@@ -91,51 +91,64 @@ const UploadResume: React.FC = () => {
   });
 
   const removeResume = (id: string) => {
-    dispatch({
-      type: 'ADD_RESUME',
-      payload: { 
-        id: '', 
-        file: new File([], ''), 
-        extractedData: '', 
-        base64Data: '' 
-      }
-    });
-    // Note: This would need a proper REMOVE_RESUME action in the reducer
+    // This would need a proper REMOVE_RESUME action in the reducer
   };
 
   return (
-    <Box sx={{ mb: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Upload Resumes
-      </Typography>
+    <Box>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ mb: 1, color: 'text.primary' }}>
+          Upload Resumes
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Upload candidate resumes in PDF or DOCX format for analysis
+        </Typography>
+      </Box>
       
       <Paper
         {...getRootProps()}
         sx={{
-          p: 3,
-          mb: 2,
+          p: 6,
+          mb: 3,
           border: '2px dashed',
-          borderColor: isDragActive ? 'primary.main' : 'grey.300',
-          bgcolor: isDragActive ? 'action.hover' : 'background.paper',
+          borderColor: isDragActive ? 'primary.main' : 'divider',
+          bgcolor: isDragActive ? 'primary.50' : 'background.paper',
           cursor: 'pointer',
           textAlign: 'center',
           transition: 'all 0.3s ease',
+          borderRadius: 3,
           '&:hover': {
             borderColor: 'primary.main',
             bgcolor: 'action.hover',
+            transform: 'translateY(-2px)',
+            boxShadow: '0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
           },
         }}
       >
         <input {...getInputProps()} />
-        <UploadIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
-        <Typography variant="h6" gutterBottom>
+        <Box sx={{ 
+          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+          borderRadius: '50%',
+          width: 80,
+          height: 80,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          mx: 'auto',
+          mb: 3
+        }}>
+          <UploadIcon sx={{ fontSize: 40, color: 'white' }} />
+        </Box>
+        
+        <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
           {isDragActive ? 'Drop files here' : 'Drag & drop resumes here'}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          or click to select files (PDF, DOCX)
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          or click to select files • PDF, DOCX supported
         </Typography>
+        
         {state.loading.uploadingResume && (
-          <Box sx={{ mt: 2 }}>
+          <Box sx={{ mt: 3 }}>
             <CircularProgress size={24} />
             <Typography variant="body2" sx={{ mt: 1 }}>
               Processing resume...
@@ -145,39 +158,61 @@ const UploadResume: React.FC = () => {
       </Paper>
 
       {state.resumes.length > 0 && (
-        <Paper sx={{ mt: 2 }}>
-          <List>
-            {state.resumes.map((resume) => (
+        <Paper sx={{ overflow: 'hidden' }}>
+          <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Uploaded Resumes ({state.resumes.length})
+            </Typography>
+          </Box>
+          <List sx={{ p: 0 }}>
+            {state.resumes.map((resume, index) => (
               <ListItem
                 key={resume.id}
-                secondaryAction={
-                  <IconButton
-                    edge="end"
-                    onClick={() => removeResume(resume.id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                }
+                sx={{ 
+                  py: 2,
+                  px: 3,
+                  borderBottom: index < state.resumes.length - 1 ? '1px solid' : 'none',
+                  borderColor: 'divider',
+                  '&:hover': { bgcolor: 'action.hover' }
+                }}
               >
                 <ListItemIcon>
+                  <DragIcon sx={{ color: 'text.disabled' }} />
+                </ListItemIcon>
+                <ListItemIcon>
                   {resume.extractedData ? (
-                    <CheckIcon color="success" />
+                    <CheckIcon sx={{ color: 'success.main' }} />
                   ) : (
-                    <FileIcon />
+                    <FileIcon sx={{ color: 'text.secondary' }} />
                   )}
                 </ListItemIcon>
                 <ListItemText
-                  primary={resume.file.name}
+                  primary={
+                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                      {resume.file.name}
+                    </Typography>
+                  }
                   secondary={
-                    <Box sx={{ mt: 1 }}>
+                    <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Chip
                         size="small"
                         label={resume.extractedData ? 'Processed' : 'Processing...'}
                         color={resume.extractedData ? 'success' : 'default'}
+                        sx={{ fontWeight: 500 }}
                       />
+                      <Typography variant="caption" color="text.secondary">
+                        {(resume.file.size / 1024 / 1024).toFixed(2)} MB
+                      </Typography>
                     </Box>
                   }
                 />
+                <IconButton
+                  edge="end"
+                  onClick={() => removeResume(resume.id)}
+                  sx={{ color: 'error.main' }}
+                >
+                  <DeleteIcon />
+                </IconButton>
               </ListItem>
             ))}
           </List>

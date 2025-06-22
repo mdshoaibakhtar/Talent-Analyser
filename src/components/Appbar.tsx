@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   AppBar,
@@ -9,6 +10,7 @@ import {
   Box,
   useTheme,
   useMediaQuery,
+  Container,
 } from "@mui/material";
 import {
   Description as ResumeIcon,
@@ -16,6 +18,7 @@ import {
   Compare as CompareIcon,
   Menu as MenuIcon,
   Clear as ClearIcon,
+  Analytics as AnalyticsIcon,
 } from "@mui/icons-material";
 import { useAppContext } from "../context/AppContext";
 
@@ -32,75 +35,92 @@ const Appbar: React.FC = () => {
     dispatch({ type: "TOGGLE_SIDEBAR" });
   };
 
+  const totalItems = state.resumes.length + 
+    (state.jobDescription ? 1 : 0) + 
+    (state.comparisonResult ? 1 : 0);
+
   return (
-    <AppBar position="static" elevation={2}>
-      <Toolbar>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ flexGrow: 1, fontWeight: "bold" }}
-        >
-          Talent Analyser
-        </Typography>
-
-        {!isMobile && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Badge badgeContent={state.resumes.length} color="secondary">
-              <ResumeIcon />
-            </Badge>
-            <Typography variant="body2">Resumes</Typography>
-
-            <Badge
-              badgeContent={state.jobDescription ? 1 : 0}
-              color="secondary"
+    <AppBar position="static" elevation={0}>
+      <Container maxWidth="xl">
+        <Toolbar sx={{ py: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <AnalyticsIcon sx={{ mr: 1, color: 'primary.main', fontSize: 28 }} />
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ 
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
             >
-              <JobIcon />
-            </Badge>
-            <Typography variant="body2">Job Description</Typography>
-
-            <Badge
-              badgeContent={state.comparisonResult ? 1 : 0}
-              color="secondary"
-            >
-              <CompareIcon />
-            </Badge>
-            <Typography variant="body2">Analysis</Typography>
+              Talent Analyser
+            </Typography>
           </Box>
-        )}
 
-        <Box sx={{ ml: 2 }}>
-          <IconButton
-            color="inherit"
-            onClick={handleToggleSidebar}
-            title="Toggle Results Panel"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Button
-            color="inherit"
-            onClick={handleClearAll}
-            startIcon={<ClearIcon />}
-            sx={{ ml: 1 }}
-          >
-            {isMobile ? "" : "Clear All"}
-          </Button>
-          {!isMobile &&
-            state.resumes.length +
-              (state.jobDescription ? 1 : 0) +
-              (state.comparisonResult ? 1 : 0) >
-              0 && (
+          {!isMobile && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 3, mr: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Badge badgeContent={state.resumes.length} color="primary" 
+                  sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', minWidth: 20, height: 20 } }}>
+                  <ResumeIcon sx={{ color: 'text.secondary' }} />
+                </Badge>
+                <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                  Resumes
+                </Typography>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Badge badgeContent={state.jobDescription ? 1 : 0} color="primary"
+                  sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', minWidth: 20, height: 20 } }}>
+                  <JobIcon sx={{ color: 'text.secondary' }} />
+                </Badge>
+                <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                  Job Description
+                </Typography>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Badge badgeContent={state.comparisonResult ? 1 : 0} color="primary"
+                  sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', minWidth: 20, height: 20 } }}>
+                  <CompareIcon sx={{ color: 'text.secondary' }} />
+                </Badge>
+                <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                  Analysis
+                </Typography>
+              </Box>
+            </Box>
+          )}
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <IconButton
+              onClick={handleToggleSidebar}
+              sx={{ 
+                color: 'text.secondary',
+                '&:hover': { backgroundColor: 'action.hover' }
+              }}
+              title="Toggle Results Panel"
+            >
+              <MenuIcon />
+            </IconButton>
+            
+            {totalItems > 0 && (
               <Button
-                color="inherit"
                 onClick={handleClearAll}
                 startIcon={<ClearIcon />}
-                sx={{ ml: 1 }}
+                sx={{ 
+                  color: 'text.secondary',
+                  '&:hover': { backgroundColor: 'action.hover' }
+                }}
               >
-                {isMobile ? "" : "Clear All"}
+                {!isMobile && "Clear All"}
               </Button>
             )}
-        </Box>
-      </Toolbar>
-      {/* TODO: Investigate why the ClearIcon is showing even when the sidebar is closed. */}
+          </Box>
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 };
