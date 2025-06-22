@@ -124,22 +124,26 @@ const JobDescription: React.FC = () => {
   });
 
   return (
-    <Box sx={{ mb: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Job Description
-      </Typography>
-
-      <Paper sx={{ p: 2 }}>
+    <Box sx={{ mb: 1, width: "100%" }}>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ mb: 1, color: "text.primary" }}>
+          Upload Resumes
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Upload candidate resumes in PDF or DOCX format for analysis
+        </Typography>
+      </Box>
+      <Paper sx={{ p: 2, mt: 2, width: "100%" }}>
         <Tabs
           value={activeTab}
           onChange={(_, newValue) => setActiveTab(newValue)}
           sx={{ mb: 2 }}
         >
-          <Tab icon={<LinkIcon />} label="URL" />
           <Tab icon={<UploadIcon />} label="Upload PDF" />
+          <Tab icon={<LinkIcon />} label="URL" />
         </Tabs>
 
-        {activeTab === 0 && (
+        {activeTab === 1 && (
           <Box>
             <TextField
               fullWidth
@@ -147,20 +151,22 @@ const JobDescription: React.FC = () => {
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
               placeholder="https://example.com/job-posting"
-              sx={{ mb: 2 }}
+              sx={{ mb: 4, mt:1 }}
             />
             <Button
               variant="contained"
               onClick={handleUrlSubmit}
               startIcon={<SendIcon />}
               disabled={state.loading.extractingJD}
+              sx={{ mb: 3 }}
+              fullWidth
             >
               Extract from URL
             </Button>
           </Box>
         )}
 
-        {activeTab === 1 && (
+        {activeTab === 0 && (
           <Paper
             {...getRootProps()}
             sx={{

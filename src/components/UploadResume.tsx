@@ -106,6 +106,7 @@ const UploadResume: React.FC = () => {
   });
 
   const removeResume = (id: string) => {
+    console.log(id)
     // This would need a proper REMOVE_RESUME action in the reducer
   };
 
