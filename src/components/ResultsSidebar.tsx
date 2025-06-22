@@ -171,3 +171,116 @@ const ResultsSidebar: React.FC = () => {
 };
 
 export default ResultsSidebar;
+import React from 'react';
+import {
+  Drawer,
+  Box,
+  Typography,
+  IconButton,
+  Paper,
+  Divider,
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
+import {
+  Close as CloseIcon,
+  TrendingUp as TrendingUpIcon,
+  Assessment as AssessmentIcon,
+} from '@mui/icons-material';
+import { useAppContext } from '../context/AppContext';
+
+const ResultsSidebar: React.FC = () => {
+  const { state, dispatch } = useAppContext();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const handleClose = () => {
+    dispatch({ type: 'TOGGLE_SIDEBAR' });
+  };
+
+  return (
+    <Drawer
+      anchor="right"
+      open={state.sidebarOpen}
+      onClose={handleClose}
+      sx={{
+        '& .MuiDrawer-paper': {
+          width: isMobile ? '100%' : 500,
+          p: 3,
+          bgcolor: 'background.default',
+        },
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <AssessmentIcon sx={{ color: 'primary.main' }} />
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+            Analysis Results
+          </Typography>
+        </Box>
+        <IconButton onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+      </Box>
+
+      {state.comparisonResult ? (
+        <Box>
+          <Box sx={{ mb: 3 }}>
+            <Chip 
+              icon={<TrendingUpIcon />}
+              label="AI Analysis Complete" 
+              color="success" 
+              sx={{ fontWeight: 500 }}
+            />
+          </Box>
+          
+          <Paper sx={{ p: 3, mb: 3 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+              Comparison Summary
+            </Typography>
+            <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+              {state.comparisonResult}
+            </Typography>
+          </Paper>
+
+          <Divider sx={{ my: 3 }} />
+
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+            Analysis Details
+          </Typography>
+          
+          <List>
+            <ListItem>
+              <ListItemText
+                primary="Resumes Analyzed"
+                secondary={`${state.resumes.filter(r => r.extractedData).length} out of ${state.resumes.length} uploaded`}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Job Description Source"
+                secondary={state.jobDescription?.source === 'url' ? 'URL' : 'PDF Upload'}
+              />
+            </ListItem>
+          </List>
+        </Box>
+      ) : (
+        <Box sx={{ textAlign: 'center', py: 6 }}>
+          <AssessmentIcon sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
+          <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+            No Analysis Yet
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Upload resumes and add a job description, then click "Start Analysis" to see results here.
+          </Typography>
+        </Box>
+      )}
+    </Drawer>
+  );
+};
+
+export default ResultsSidebar;

@@ -35,3 +35,29 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+import React from 'react';
+import { Box, Container, Typography, Link } from '@mui/material';
+
+const Footer: React.FC = () => {
+  return (
+    <Box
+      component="footer"
+      sx={{
+        py: 3,
+        px: 2,
+        mt: 'auto',
+        backgroundColor: 'background.paper',
+        borderTop: '1px solid',
+        borderColor: 'divider',
+      }}
+    >
+      <Container maxWidth="xl">
+        <Typography variant="body2" color="text.secondary" align="center">
+          © 2024 Talent Analyser. Powered by AI for intelligent resume matching.
+        </Typography>
+      </Container>
+    </Box>
+  );
+};
+
+export default Footer;
