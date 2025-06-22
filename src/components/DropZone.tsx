@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { apiEndPoint } from './Constant';
+import { apiEndPoint, prompt } from './Constant';
 import axios from 'axios';
 
 const Dropzone: React.FC = () => {
@@ -15,10 +15,11 @@ const Dropzone: React.FC = () => {
             base64String = base64String.replace(/^data:application\/pdf;base64,/, "");
             axios.post(apiEndPoint + '/upload-resume', {
                 file_name: "Md_Shoaib.pdf",
-                data: base64String
+                prompt: prompt,
+                base64_data: base64String
             }).then(response => {
-                console.log('File uploaded successfully:', response.data);
-                setResumeExtractedData(response.data.extracted_data);
+                console.log('File uploaded successfully:', response.data.response);
+                setResumeExtractedData(response.data.response);
             })
             // console.log(base64String);
         };
@@ -40,7 +41,7 @@ const Dropzone: React.FC = () => {
             </div>
             <h2>Resume Extracted Data</h2>
             <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ccc' }}>
-                {resumeExtractedData ? resumeExtractedData : "No data extracted yet."}
+                <pre>{resumeExtractedData}</pre>
             </div>
         </div>
     )
