@@ -120,10 +120,10 @@ const JobDescription: React.FC<JobDescription> = ({ uploadedJobDescription, setU
     <Box sx={{ mb: 1, width: "100%" }}>
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" sx={{ mb: 1, color: "text.primary" }}>
-          Upload Resumes
+          Upload Job Description
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Upload candidate resumes in PDF or DOCX format for analysis
+          Upload job descriptions in PDF format for analysis
         </Typography>
       </Box>
       <Paper sx={{ p: 2, mt: 2, width: "100%" }}>
@@ -145,6 +145,7 @@ const JobDescription: React.FC<JobDescription> = ({ uploadedJobDescription, setU
               onChange={(e) => setUrlInput(e.target.value)}
               placeholder="https://example.com/job-posting"
               sx={{ mb: 4, mt: 1 }}
+              disabled
             />
             <Button
               variant="contained"

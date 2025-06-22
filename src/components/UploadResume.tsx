@@ -99,7 +99,7 @@ const UploadResume: React.FC<Resume> = ({ setUploadedResume, uploadedResume }) =
           Upload Resumes
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Upload candidate resumes in PDF or DOCX format for analysis
+          Upload candidate resumes in PDF format for analysis
         </Typography>
       </Box>
 
@@ -145,7 +145,7 @@ const UploadResume: React.FC<Resume> = ({ setUploadedResume, uploadedResume }) =
           {isDragActive ? "Drop files here" : "Drag & drop resumes here"}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          or click to select files • PDF, DOCX supported
+          or click to select files • PDF supported
         </Typography>
 
         {state.loading.uploadingResume && (
