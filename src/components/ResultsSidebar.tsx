@@ -51,7 +51,7 @@ const ResultsSidebar: React.FC = () => {
       <Divider sx={{ mb: 2 }} />
 
       {/* Resumes Section */}
-      <Accordion defaultExpanded>
+      <Accordion defaultExpanded sx={{ mb: 2 }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <ResumeIcon sx={{ mr: 1 }} />
           <Typography variant="subtitle1">
@@ -96,7 +96,7 @@ const ResultsSidebar: React.FC = () => {
       </Accordion>
 
       {/* Job Description Section */}
-      <Accordion>
+      <Accordion sx={{ mb: 2 }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <JobIcon sx={{ mr: 1 }} />
           <Typography variant="subtitle1">Job Description</Typography>
@@ -137,7 +137,7 @@ const ResultsSidebar: React.FC = () => {
       </Accordion>
 
       {/* Comparison Results Section */}
-      <Accordion>
+      <Accordion sx={{ mb: 2 }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <CompareIcon sx={{ mr: 1 }} />
           <Typography variant="subtitle1">Analysis Results</Typography>

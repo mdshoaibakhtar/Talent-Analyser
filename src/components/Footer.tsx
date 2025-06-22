@@ -20,11 +20,11 @@ const Footer: React.FC = () => {
           {new Date().getFullYear()}
           {" Talent Analyser. Built with "}
           <Link color="inherit" href="https://mui.com/">
-            Material-UI
+            React
           </Link>
           {" and "}
           <Link color="inherit" href="https://reactjs.org/">
-            React
+            OpenAI
           </Link>
           .
         </Typography>

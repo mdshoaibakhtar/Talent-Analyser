@@ -13,13 +13,12 @@ import {
 } from "@mui/material";
 import {
   Description as ResumeIcon,
-  Work as JobIcon,
-  Compare as CompareIcon,
   Menu as MenuIcon,
   Clear as ClearIcon,
   Analytics as AnalyticsIcon,
 } from "@mui/icons-material";
 import { useAppContext } from "../context/AppContext";
+import ContactsIcon from '@mui/icons-material/Contacts';
 
 const Appbar: React.FC = () => {
   const { state, dispatch } = useAppContext();
@@ -61,39 +60,29 @@ const Appbar: React.FC = () => {
 
           {!isMobile && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 3, mr: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}>
                 <Badge badgeContent={state.resumes.length} color="primary" 
                   sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', minWidth: 20, height: 20 } }}>
                   <ResumeIcon sx={{ color: 'text.secondary' }} />
                 </Badge>
                 <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                  Resumes
+                  About
                 </Typography>
               </Box>
 
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}>
                 <Badge badgeContent={state.jobDescription ? 1 : 0} color="primary"
                   sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', minWidth: 20, height: 20 } }}>
-                  <JobIcon sx={{ color: 'text.secondary' }} />
+                  <ContactsIcon sx={{ color: 'text.secondary' }} />
                 </Badge>
                 <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                  Job Description
-                </Typography>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Badge badgeContent={state.comparisonResult ? 1 : 0} color="primary"
-                  sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', minWidth: 20, height: 20 } }}>
-                  <CompareIcon sx={{ color: 'text.secondary' }} />
-                </Badge>
-                <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                  Analysis
+                  Contact
                 </Typography>
               </Box>
             </Box>
           )}
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {isMobile && (<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <IconButton
               onClick={handleToggleSidebar}
               sx={{ 
@@ -117,7 +106,7 @@ const Appbar: React.FC = () => {
                 {!isMobile && "Clear All"}
               </Button>
             )}
-          </Box>
+          </Box>)}
         </Toolbar>
       </Container>
     </AppBar>
