@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import {
   Box,
@@ -188,17 +187,17 @@ const JobDescription: React.FC = () => {
 };
 
 export default JobDescription;
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Box,
-  Paper,
   Typography,
   TextField,
   Button,
+  Paper,
+  Alert,
   Tabs,
   Tab,
   CircularProgress,
-  Alert,
   Chip,
 } from '@mui/material';
 import {

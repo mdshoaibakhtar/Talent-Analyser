@@ -1,15 +1,12 @@
-
-import React from 'react';
 import {
   Box,
   Typography,
   Button,
-  Paper,
-  Alert,
-  CircularProgress,
-  Chip,
   Card,
   CardContent,
+  Chip,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import {
   Compare as CompareIcon,
@@ -90,7 +87,7 @@ const CompareResumes: React.FC = () => {
           }}>
             <AnalyticsIcon sx={{ fontSize: 40, color: 'white' }} />
           </Box>
-          
+
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
             Ready to analyze {processedResumesCount} resume{processedResumesCount !== 1 ? 's' : ''}
           </Typography>
