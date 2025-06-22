@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
       
       <Container maxWidth="xl" sx={{ flexGrow: 1, pb: 6 }}>
         <Grid container spacing={4}>
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Paper sx={{ 
               p: 4, 
               height: 'fit-content',
@@ -58,9 +58,9 @@ const Dashboard: React.FC = () => {
             </Paper>
           </Grid>
           
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Grid container spacing={4}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Paper sx={{ 
                   p: 4,
                   transition: 'all 0.3s ease',
@@ -72,7 +72,7 @@ const Dashboard: React.FC = () => {
                 </Paper>
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Paper sx={{ 
                   p: 4,
                   transition: 'all 0.3s ease',
