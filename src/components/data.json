@@ -1,0 +1,83 @@
+{
+        "summary": "Md Shoaib Akhtar shows strong alignment with the full stack developer position at Deveryware, particularly regarding core web development experience, AWS/cloud skills, and modern frontend/backend experience (ReactJS, JavaScript/TypeScript, Django REST, PostgreSQL, AWS, etc.). He has a solid foundation in RESTful services, database integration, and collaborative team delivery, while his contributions demonstrate meaningful impact in application efficiency and security. However, several gaps exist in hands-on experience with Node.js, Angular, Docker, Kubernetes, and working in European/regulatory environments. There is also limited mention of hybrid/progressive/native app delivery, distributed systems scope, and requirements for English/French proficiency. Overall, his credentials align well with the technical and collaborative culture sought, but targeted improvements are needed to reach a strong match.",
+        "matching": {
+            "technical_skills": [
+                "JavaScript",
+                "TypeScript",
+                "ReactJS",
+                "HTML",
+                "CSS",
+                "PostgreSQL",
+                "RESTful APIs (Django REST Framework)",
+                "AWS cloud services (Lambda, API Gateway, etc.)",
+                "Git/GitHub",
+                "SQL",
+                "Material UI (MUI)",
+                "NextJs",
+                "Django",
+                "Fast API",
+                "Experience with web application architecture",
+                "Experience integrating with back-end APIs"
+            ],
+            "soft_skills": [
+                "Collaboration with cross-functional teams (designers, QA, development)",
+                "Teamwork within large development teams",
+                "Communication (project efficiency improvements, collaboration noted)",
+                "Problem-solving (efficiency and security improvements)",
+                "Adaptability (delivered significant improvements, ongoing feature enhancements, working in agile environments)",
+                "Project delivery and professionalism"
+            ],
+            "domain_knowledge": [
+                "Web applications development",
+                "Cloud architecture (serverless, AWS)",
+                "Frontend/backend integration",
+                "User authentication/security (MFA, WAF Captcha)"
+            ],
+            "responsibilities": [
+                "Designing, coding, and modifying web applications",
+                "Integrating with APIs",
+                "Database integration (PostgreSQL, DynamoDB, AWS RDS)",
+                "Collaborating in agile teams",
+                "Delivering high-quality, scalable solutions",
+                "Project management/delivery"
+            ]
+        },
+        "missing": {
+            "technical_skills": [
+                "Node.js (not mentioned)",
+                "Angular (not mentioned)",
+                "JQuery (not mentioned)",
+                "MongoDB (minimal overlap; candidate has DynamoDB/Postgres/AWS RDS)",
+                "MySQL (knows SQL but not specific platform)",
+                "Docker (not mentioned)",
+                "Kubernetes (not mentioned)",
+                "Hybrid/Native/Progressive web app frameworks (experience only noted with ReactJS/NextJS)"
+            ],
+            "experience_or_responsibilities": [
+                "2 years direct experience with Node.js or Angular (unspecified—has similar duration on other stacks)",
+                "Distributed environments (some AWS experience, but unclear on distributed architectures)",
+                "Previous direct experience in European research or emergency/public sector projects (not mentioned)"
+            ],
+            "domain_knowledge": [
+                "PEMEA or public safety/emergency services systems (not referenced)",
+                "European data protection/regulatory domains (not referenced)",
+                "DevOps tools/environment outside AWS (e.g., Docker/Kubernetes)"
+            ],
+            "certifications": [
+                "No certifications in Node.js, Angular, Docker, or Kubernetes",
+                "No listed English or French proficiency certification (though English is likely, not explicit)",
+                "No European public sector or PEMEA-specific certification"
+            ]
+        },
+        "matching_score": 76,
+        "note_of_improvement": [
+            "Gain hands-on experience with Node.js and Angular, as expertise in at least one of these is explicitly requested.",
+            "Familiarize and practice with Docker and Kubernetes to satisfy DevOps environment expectations and valuable skills areas.",
+            "Get exposure to MongoDB and MySQL to cover more backend database demands.",
+            "Demonstrate or obtain working knowledge of building hybrid, native, or progressive web apps, or reference relevant transferable React/NextJS experience.",
+            "Showcase experience or study distributed systems, and highlight any work with microservices, serverless patterns (beyond AWS Lambda), or geographically distributed architectures.",
+            "Emphasize ability to work within or adaptability to European/international projects and regulatory environments (PEMEA, GDPR).",
+            "If possible, evidence strong English proficiency (and any French knowledge, as valuable skill), perhaps by stating certifications, relevant coursework, or working in English-speaking teams.",
+            "Consider taking short certifications or courses in Docker, Kubernetes, and perhaps Node.js to make the profile even more compelling for this role."
+        ]
+    }

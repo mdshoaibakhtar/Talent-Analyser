@@ -14,6 +14,7 @@ import {
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { apiEndPoint, prompt } from './Constant';
+import DialogBox from './DialogBox';
 
 interface CompareInterface {
   uploadedJobDescription: { file_name: string; base64: string };
@@ -21,12 +22,13 @@ interface CompareInterface {
 }
 
 const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, uploadedResume }) => {
-  const [comparing, setComparing] = useState(false);
+  const [comparing, setComparing] = useState('false');
+  const [open, setOpen] = useState(false);
   const handleCompare = async () => {
     if (!uploadedResume.base64 || !uploadedJobDescription.base64) {
       return;
     }
-    setComparing(true);
+    setComparing('loading');
     try {
       const axios = (await import('axios')).default;
       await axios.post(apiEndPoint + '/data-analysis', {
@@ -35,12 +37,13 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
         prompt: prompt
       }).then((response) => {
         console.log('Analysis response:', response.data);
+        setComparing('done');
       })
       // handle response as needed
     } catch (error) {
       // handle error as needed
     } finally {
-      setComparing(false);
+      setComparing('false');
     }
   }
   return (
@@ -111,9 +114,9 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
           <Button
             variant="contained"
             size="large"
-            onClick={handleCompare}
+            onClick={comparing === 'done' ? () => setOpen(true) : handleCompare}
             disabled={uploadedResume.file_name === '' || uploadedJobDescription.file_name === ''}
-            startIcon={comparing ? <CircularProgress size={20} color="inherit" /> : <CompareIcon />}
+            startIcon={comparing == 'loading' ? <CircularProgress size={20} color="inherit" /> : <CompareIcon />}
             sx={{
               py: 1.5,
               px: 4,
@@ -122,7 +125,7 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
               minWidth: 180,
             }}
           >
-            {comparing ? 'Analyzing...' : 'Start Analysis'}
+            {comparing === 'loading' ? 'Analyzing...' : (comparing === 'done' ? 'View analysis' : 'Start Analysis')}
           </Button>
 
           {/* {state.comparisonResult && (
@@ -137,6 +140,7 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
               ✨ Analysis complete! Check the results panel for detailed insights.
             </Alert>
           )} */}
+          <DialogBox open={open} onClose={() => setOpen(false)} />
         </CardContent>
       </Card>
     </Box>

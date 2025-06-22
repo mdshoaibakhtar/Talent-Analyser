@@ -1,5 +1,6 @@
 
-export const apiEndPoint = 'http://localhost:8000'
+// export const apiEndPoint = 'http://localhost:8000'
+export const apiEndPoint = 'https://talent-analyser-fast-api.vercel.app'
 
 export const API_ENDPOINTS = {
   UPLOAD_RESUME: '/upload-resume',
