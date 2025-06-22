@@ -42,8 +42,6 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
       // handle response as needed
     } catch (error) {
       // handle error as needed
-    } finally {
-      setComparing('false');
     }
   }
   return (
