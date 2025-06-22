@@ -24,6 +24,7 @@ interface CompareInterface {
 const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, uploadedResume }) => {
   const [comparing, setComparing] = useState('false');
   const [open, setOpen] = useState(false);
+  const [data, setData] = useState<object>({});
   const handleCompare = async () => {
     if (!uploadedResume.base64 || !uploadedJobDescription.base64) {
       return;
@@ -37,6 +38,7 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
         prompt: prompt
       }).then((response) => {
         console.log('Analysis response:', response.data);
+        setData(response.data.data);
         setComparing('done');
       })
       // handle response as needed
@@ -138,7 +140,7 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
               ✨ Analysis complete! Check the results panel for detailed insights.
             </Alert>
           )} */}
-          <DialogBox open={open} onClose={() => setOpen(false)} />
+          <DialogBox open={open} onClose={() => setOpen(false)} data={data}/>
         </CardContent>
       </Card>
     </Box>
