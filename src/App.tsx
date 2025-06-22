@@ -1,16 +1,15 @@
-
-import './App.css'
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { AppProvider } from './context/AppContext';
-import Dashboard from './components/Dashboard'
+import "./App.css";
+import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { AppProvider } from "./context/AppContext";
+import Dashboard from "./components/Dashboard";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: "#1976d2",
     },
     secondary: {
-      main: '#dc004e',
+      main: "#dc004e",
     },
   },
   typography: {
@@ -20,7 +19,7 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
+          borderRadius: 0,
         },
       },
     },
@@ -28,7 +27,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 8,
-          textTransform: 'none',
+          textTransform: "none",
         },
       },
     },
@@ -43,7 +42,7 @@ function App() {
         <Dashboard />
       </AppProvider>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;

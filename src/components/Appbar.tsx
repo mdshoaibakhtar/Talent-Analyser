@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   AppBar,
   Toolbar,
@@ -9,27 +9,27 @@ import {
   Box,
   useTheme,
   useMediaQuery,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Description as ResumeIcon,
   Work as JobIcon,
   Compare as CompareIcon,
   Menu as MenuIcon,
   Clear as ClearIcon,
-} from '@mui/icons-material';
-import { useAppContext } from '../context/AppContext';
+} from "@mui/icons-material";
+import { useAppContext } from "../context/AppContext";
 
 const Appbar: React.FC = () => {
   const { state, dispatch } = useAppContext();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClearAll = () => {
-    dispatch({ type: 'CLEAR_ALL' });
+    dispatch({ type: "CLEAR_ALL" });
   };
 
   const handleToggleSidebar = () => {
-    dispatch({ type: 'TOGGLE_SIDEBAR' });
+    dispatch({ type: "TOGGLE_SIDEBAR" });
   };
 
   return (
@@ -38,13 +38,13 @@ const Appbar: React.FC = () => {
         <Typography
           variant="h6"
           component="div"
-          sx={{ flexGrow: 1, fontWeight: 'bold' }}
+          sx={{ flexGrow: 1, fontWeight: "bold" }}
         >
           Talent Analyser
         </Typography>
 
         {!isMobile && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Badge badgeContent={state.resumes.length} color="secondary">
               <ResumeIcon />
             </Badge>
@@ -82,10 +82,25 @@ const Appbar: React.FC = () => {
             startIcon={<ClearIcon />}
             sx={{ ml: 1 }}
           >
-            {isMobile ? '' : 'Clear All'}
+            {isMobile ? "" : "Clear All"}
           </Button>
+          {!isMobile &&
+            state.resumes.length +
+              (state.jobDescription ? 1 : 0) +
+              (state.comparisonResult ? 1 : 0) >
+              0 && (
+              <Button
+                color="inherit"
+                onClick={handleClearAll}
+                startIcon={<ClearIcon />}
+                sx={{ ml: 1 }}
+              >
+                {isMobile ? "" : "Clear All"}
+              </Button>
+            )}
         </Box>
       </Toolbar>
+      {/* TODO: Investigate why the ClearIcon is showing even when the sidebar is closed. */}
     </AppBar>
   );
 };
