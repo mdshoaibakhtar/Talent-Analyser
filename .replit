@@ -14,3 +14,15 @@ exposeLocalhost = true
 
 [[ports]]
 localPort = 5173
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 43833926
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
