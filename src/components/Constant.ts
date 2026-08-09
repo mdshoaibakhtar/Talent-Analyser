@@ -1,6 +1,6 @@
 
-// export const apiEndPoint = 'http://localhost:8000'
-export const apiEndPoint = 'https://talent-analyser-fast-api.vercel.app'
+export const apiEndPoint = 'http://127.0.0.1:8000/api'
+// export const apiEndPoint = 'https://talent-analyser-fast-api.vercel.app'
 
 export const API_ENDPOINTS = {
   UPLOAD_RESUME: '/upload-resume',
@@ -9,4 +9,50 @@ export const API_ENDPOINTS = {
   FIND_DIFF: '/find-diff'
 };
 
-export const prompt = 'You are an expert career analyst and technical hiring strategist with deep industry knowledge in software engineering recruitment. Given a full resume and a job description (JD), perform a comprehensive analysis by extracting and comparing critical data from both documents. Your task is to act as a domain expert and conduct a structured gap analysis to determine how well the candidates profile aligns with the JD. Your comparison should include: Technical Skills (Languages, frameworks, libraries, tools, cloud services, databases, CI/CD, testing tools, etc.) Soft Skills (Communication, leadership, teamwork, problem-solving, adaptability, etc.) Domain Knowledge or Industry Expertise (e.g., fintech, AI/ML, e-commerce, DevOps, healthcare, etc.) Job Roles, Responsibilities, and Project Experience (Previous positions, key duties, technologies used, impact delivered) Education and Certifications (Check for relevant academic qualifications or industry certifications mentioned in the JD)You must return the output as a structured object with clear key-value pairs. The object should include:summary: A brief text summarizing the overall alignment and fit.matching: An object with grouped matches under these keys — technical_skills, soft_skills, domain_knowledge, responsibilities. Each should contain a list of matched items.missing: An object with grouped gaps under these keys — technical_skills, experience_or_responsibilities, domain_knowledge, certifications. Each should contain a list of missing or weak items as per the JD.matching_score: A number between 1–100 based on the level of alignment. Below 50 means not a fit, 50–70 means partial fit, 70–85 is good fit, and above 85 is a strong fit.Make sure the output is human-readable, deeply analytical, and well-organized. And most important dont forget to add note of improvement(as an array/list) whats need to be improved.'
+export const prompt = `text
+Analyze the resume against the job description and evaluate how well the candidate matches the role.
+
+Return ONLY valid JSON. Do not include markdown, code fences, explanations, or any text outside the JSON object.
+
+The JSON response MUST follow this exact structure:
+
+{
+  "summary": "A concise overall assessment of the candidate's suitability for the job.",
+  "matching_score": 0,
+  "resume_ats_score": 0,
+  "matching": {
+    "skills": [],
+    "experience": [],
+    "qualifications": [],
+    "other": []
+  },
+  "missing": {
+    "skills": [],
+    "experience": [],
+    "qualifications": [],
+    "other": []
+  },
+  "points_needs_to_be_replace_and_added_in_the_resume": [{'replace': 'text to be replaced', 'add': 'text to be added'}],
+  "note_of_improvement": []
+}
+
+Rules:
+
+- "summary" must be a concise string.
+- "matching_score" and "resume_ats_score" must be a number from 0 to 100.
+- "matching" must contain information that is supported by both the resume and job description.
+- "missing" must contain requirements from the job description that are missing or not clearly demonstrated in the resume. don't include any information that is not present in the job description. and dont include any information that is not present in the resume.
+- "note_of_improvement" must be an array of actionable suggestions for improving the candidate's fit.
+- Do not invent skills, experience, qualifications, or achievements.
+- If information is unavailable, use an empty array rather than making assumptions.
+- Compare the candidate against the actual requirements in the job description.
+- Consider skills, experience, qualifications, responsibilities, and other relevant requirements when calculating the matching score.
+- "points_needs_to_be_replace_and_added_in_the_resume" must be an array of objects with "replace" and "add" properties.
+- Return valid JSON only.
+
+RESUME:
+{resume_text}
+
+JOB DESCRIPTION:
+{jd_text}
+`

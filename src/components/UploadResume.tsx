@@ -72,7 +72,7 @@ const UploadResume: React.FC<Resume> = ({ setUploadedResume, uploadedResume }) =
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    let files = acceptedFiles[0];
+    const files = acceptedFiles[0];
     if (files && files.type === "application/pdf" ||
       files.type ===
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||

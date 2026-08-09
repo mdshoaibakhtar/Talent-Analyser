@@ -43,6 +43,8 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
       })
       // handle response as needed
     } catch (error) {
+      setComparing('failed');
+      console.error('Error comparing resumes:', error);
       // handle error as needed
     }
   }
