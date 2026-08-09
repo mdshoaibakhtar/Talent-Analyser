@@ -7,38 +7,49 @@ import Dashboard from "./components/Dashboard";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#6366f1", // Modern indigo
-      light: "#818cf8",
-      dark: "#4f46e5",
+      main: "#6d4dfc",
+      light: "#8b72ff",
+      dark: "#4c2edc",
     },
     secondary: {
-      main: "#ec4899", // Modern pink
-      light: "#f472b6",
-      dark: "#db2777",
+      main: "#ec4899",
+      light: "#f9a8d4",
+      dark: "#be185d",
+    },
+    success: {
+      main: "#17b26a",
+      light: "#dcfce7",
+      dark: "#087443",
+    },
+    warning: {
+      main: "#ff8a00",
+      light: "#fff7ed",
+      dark: "#c2410c",
     },
     background: {
-      default: "#f8fafc",
+      default: "#f8faff",
       paper: "#ffffff",
     },
     text: {
-      primary: "#1e293b",
-      secondary: "#64748b",
+      primary: "#111936",
+      secondary: "#63708a",
     },
   },
   typography: {
     fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     h1: {
-      fontWeight: 700,
-      fontSize: '2.25rem',
-      letterSpacing: '-0.025em',
+      fontWeight: 800,
+      fontSize: 'clamp(2.4rem, 5vw, 4.25rem)',
+      lineHeight: 0.98,
+      letterSpacing: '-0.055em',
     },
     h4: {
-      fontWeight: 600,
-      fontSize: '1.5rem',
+      fontWeight: 800,
+      fontSize: '1.35rem',
       letterSpacing: '-0.025em',
     },
     h6: {
-      fontWeight: 600,
+      fontWeight: 800,
       fontSize: '1.125rem',
       letterSpacing: '-0.025em',
     },
@@ -52,34 +63,43 @@ const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 0,
+    borderRadius: 18,
   },
   components: {
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: 0,
-          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-          border: '1px solid rgb(241 245 249)',
+          borderRadius: 18,
+          boxShadow: '0 18px 60px rgba(17, 25, 54, 0.06)',
+          border: '1px solid rgba(109, 77, 252, 0.12)',
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+          boxShadow: '0 14px 45px rgba(17, 25, 54, 0.06)',
+          border: '1px solid rgba(109, 77, 252, 0.12)',
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius:0,
+          borderRadius: 10,
           textTransform: "none",
-          fontWeight: 600,
-          padding: '12px 24px',
+          fontWeight: 800,
+          padding: '10px 22px',
           boxShadow: 'none',
           '&:hover': {
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+            boxShadow: '0 12px 24px rgba(109, 77, 252, 0.18)',
           },
         },
         contained: {
-          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+          background: 'linear-gradient(135deg, #6d4dfc 0%, #7c3aed 100%)',
           '&:hover': {
-            background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+            background: 'linear-gradient(135deg, #5b3df0 0%, #6d28d9 100%)',
           },
         },
       },
@@ -88,17 +108,26 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: '#ffffff',
-          color: '#1e293b',
-          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-          borderBottom: '1px solid rgb(241 245 249)',
+          color: '#111936',
+          boxShadow: '0 1px 0 rgba(109, 77, 252, 0.12)',
+          borderBottom: '1px solid rgba(109, 77, 252, 0.10)',
         },
       },
     },
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 0,
-          fontWeight: 500,
+          borderRadius: 999,
+          fontWeight: 700,
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 800,
+          minHeight: 48,
         },
       },
     },

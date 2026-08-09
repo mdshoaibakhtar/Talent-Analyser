@@ -1,169 +1,232 @@
 import { useCallback } from "react";
 import {
   Box,
-  Typography,
-  Paper,
+  Button,
   CircularProgress,
+  Paper,
+  Stack,
+  Typography,
 } from "@mui/material";
 import {
-  CloudUpload as UploadIcon,
+  CheckCircle,
+  CloudUpload,
+  Link as LinkIcon,
+  PictureAsPdf,
+  Upload as UploadIcon,
 } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
 import { useAppContext } from "../context/AppContext";
-// import axios from "axios";
-// import { apiEndPoint, API_ENDPOINTS, prompt } from "./Constant";
 
-interface resumeObject{
+interface ResumeObject {
   file_name: string;
   base64: string;
 }
 
 interface Resume {
-  setUploadedResume: (params: resumeObject) => void;
-  uploadedResume: resumeObject
+  setUploadedResume: (params: ResumeObject) => void;
+  uploadedResume: ResumeObject;
 }
 
 const UploadResume: React.FC<Resume> = ({ setUploadedResume, uploadedResume }) => {
   const { state, dispatch } = useAppContext();
+  const hasFile = Boolean(uploadedResume.file_name);
 
-  const processResumeFile = async (file: File) => {
-
-    // dispatch({ type: "ADD_RESUME", payload: resume });
+  const processResumeFile = useCallback((file: File) => {
     dispatch({
       type: "SET_LOADING",
       payload: { key: "uploadingResume", value: true },
     });
 
-    try {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        let base64String = reader.result as string;
-        base64String = base64String
-          .replace(/^data:application\/pdf;base64,/, "")
+    const reader = new FileReader();
 
-        try {
-          setUploadedResume({ 'file_name': file.name, 'base64': base64String });
-          // const response = await axios.post(
-          //   apiEndPoint + API_ENDPOINTS.UPLOAD_RESUME,
-          //   {
-          //     file_name: file.name,
-          //     prompt: prompt,
-          //     base64_data: base64String,
-          //   },
-          // );
+    reader.onload = () => {
+      const base64String = String(reader.result ?? "").replace(
+        /^data:application\/pdf;base64,/,
+        "",
+      );
 
-          // dispatch({
-          //   type: "UPDATE_RESUME_DATA",
-          //   payload: { id: fileId, data: response.data.response },
-          // });
-        } catch (error) {
-          console.error("Error uploading resume:", error);
-        }
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error("Error processing file:", error);
-    } finally {
+      setUploadedResume({ file_name: file.name, base64: base64String });
+      dispatch({
+        type: "ADD_RESUME",
+        payload: {
+          id: `${file.name}-${file.lastModified}`,
+          file,
+          extractedData: "",
+          base64Data: base64String,
+        },
+      });
+    };
+
+    reader.onerror = () => {
+      console.error("Error processing resume file:", reader.error);
+    };
+
+    reader.onloadend = () => {
       dispatch({
         type: "SET_LOADING",
         payload: { key: "uploadingResume", value: false },
       });
-    }
-  };
+    };
+
+    reader.readAsDataURL(file);
+  }, [dispatch, setUploadedResume]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const files = acceptedFiles[0];
-    if (files && files.type === "application/pdf" ||
-      files.type ===
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-      files.name.match(/\.(pdf|docx)$/i)
-    ) {
-      processResumeFile(files);
+    const file = acceptedFiles[0];
+    const isPdf = Boolean(file && (file.type === "application/pdf" || file.name.match(/\.pdf$/i)));
+
+    if (file && isPdf) {
+      processResumeFile(file);
     }
-  }, []);
+  }, [processResumeFile]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
       "application/pdf": [".pdf"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [".docx"],
     },
     multiple: false,
   });
 
   return (
     <Box>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" sx={{ mb: 1, color: "text.primary" }}>
-          Upload Resumes
+      <Box sx={{ mb: 2.2 }}>
+        <Typography variant="h4" sx={{ mb: 0.7 }}>
+          Upload Resume
         </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Upload candidate resumes in PDF format for analysis
+        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+          Upload your resume in PDF format or paste URL
         </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          border: "1px solid rgba(109, 77, 252, 0.18)",
+          borderRadius: 1,
+          overflow: "hidden",
+          mb: 2,
+          bgcolor: "#f7f8fc",
+        }}
+      >
+        <Button
+          startIcon={<UploadIcon />}
+          sx={{
+            borderRadius: 1,
+            color: "primary.main",
+            bgcolor: "white",
+            border: "1px solid",
+            borderColor: "primary.light",
+            boxShadow: "0 0 0 1px rgba(109, 77, 252, 0.08)",
+            "&:hover": { bgcolor: "white" },
+          }}
+        >
+          Upload File
+        </Button>
+        <Button
+          startIcon={<LinkIcon />}
+          sx={{
+            borderRadius: 0,
+            color: "text.primary",
+            bgcolor: "#f4f6fb",
+            "&:hover": { bgcolor: "#eef2fb", boxShadow: "none" },
+          }}
+        >
+          From URL
+        </Button>
       </Box>
 
       <Paper
         {...getRootProps()}
         sx={{
-          p: 6,
-          mb: 3,
+          p: { xs: 3, md: 4 },
+          mb: 2,
+          minHeight: 136,
           border: "2px dashed",
-          borderColor: isDragActive ? "primary.main" : "divider",
-          bgcolor: isDragActive ? "primary.50" : "background.paper",
+          borderColor: isDragActive ? "primary.main" : "rgba(109, 77, 252, 0.48)",
+          background: isDragActive ? "rgba(109, 77, 252, 0.07)" : "linear-gradient(180deg, #fff 0%, #fbf9ff 100%)",
           cursor: "pointer",
           textAlign: "center",
-          transition: "all 0.3s ease",
-          borderRadius: 3,
+          transition: "all 0.2s ease",
+          boxShadow: "none",
           "&:hover": {
             borderColor: "primary.main",
-            bgcolor: "action.hover",
-            transform: "translateY(-2px)",
-            boxShadow:
-              "0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+            background: "rgba(109, 77, 252, 0.05)",
           },
         }}
       >
         <input {...getInputProps()} />
         <Box
           sx={{
-            background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-            borderRadius: "50%",
-            width: 80,
-            height: 80,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            width: 58,
+            height: 58,
             mx: "auto",
-            mb: 3,
+            mb: 1.5,
+            borderRadius: "50%",
+            border: "3px solid rgba(109, 77, 252, 0.22)",
+            display: "grid",
+            placeItems: "center",
+            color: "primary.main",
+            bgcolor: "white",
           }}
         >
-          <UploadIcon sx={{ fontSize: 40, color: "white" }} />
+          <CloudUpload sx={{ fontSize: 31 }} />
         </Box>
 
-        <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-          {isDragActive ? "Drop files here" : "Drag & drop resumes here"}
+        <Typography sx={{ color: "text.primary", fontWeight: 800, mb: 0.4 }}>
+          {isDragActive ? "Drop your resume here" : "Drag & drop your resume here"}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          or click to select files • PDF supported
+        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+          PDF format only (Max 10MB)
         </Typography>
 
         {state.loading.uploadingResume && (
-          <Box sx={{ mt: 3 }}>
-            <CircularProgress size={24} />
-            <Typography variant="body2" sx={{ mt: 1 }}>
+          <Stack direction="row" justifyContent="center" alignItems="center" spacing={1} sx={{ mt: 2 }}>
+            <CircularProgress size={18} />
+            <Typography variant="body2" sx={{ fontWeight: 700 }}>
               Processing resume...
             </Typography>
-          </Box>
+          </Stack>
         )}
       </Paper>
 
-      <Paper sx={{ overflow: "hidden" }}>
-        <Box sx={{ p: 3, borderBottom: "1px solid", borderColor: "divider" }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {uploadedResume.file_name || "Uploaded Resume"}
-          </Typography>
-        </Box>
+      <Paper
+        sx={{
+          p: 1.6,
+          boxShadow: "none",
+          borderColor: hasFile ? "rgba(23, 178, 106, 0.22)" : "rgba(109, 77, 252, 0.12)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 1.5,
+        }}
+      >
+        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ minWidth: 0 }}>
+          <Box
+            sx={{
+              width: 34,
+              height: 40,
+              borderRadius: 1,
+              border: "2px solid #ff3b3b",
+              color: "#ff3b3b",
+              display: "grid",
+              placeItems: "center",
+              flexShrink: 0,
+            }}
+          >
+            <PictureAsPdf sx={{ fontSize: 22 }} />
+          </Box>
+          <Box sx={{ minWidth: 0 }}>
+            <Typography sx={{ color: "text.primary", fontWeight: 800, fontSize: 14 }} noWrap>
+              {uploadedResume.file_name || "No resume uploaded yet"}
+            </Typography>
+            <Typography sx={{ color: "text.secondary", fontSize: 13, fontWeight: 600 }}>
+              {hasFile ? "PDF uploaded" : "Waiting for PDF"}
+            </Typography>
+          </Box>
+        </Stack>
+        <CheckCircle sx={{ color: hasFile ? "success.main" : "grey.300", fontSize: 24, flexShrink: 0 }} />
       </Paper>
     </Box>
   );

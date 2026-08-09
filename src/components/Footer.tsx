@@ -6,12 +6,10 @@ const Footer: React.FC = () => {
     <Box
       component="footer"
       sx={{
-        py: 3,
+        py: 2,
         px: 2,
         mt: "auto",
-        backgroundColor: "grey.100",
-        borderTop: 1,
-        borderColor: "grey.300",
+        backgroundColor: "transparent",
       }}
     >
       <Container maxWidth="lg">
@@ -22,11 +20,7 @@ const Footer: React.FC = () => {
           <Link color="inherit" href="https://mui.com/">
             React
           </Link>
-          {" and "}
-          <Link color="inherit" href="https://reactjs.org/">
-            OpenAI
-          </Link>
-          .
+          {" and AI-powered matching."}
         </Typography>
       </Container>
     </Box>
