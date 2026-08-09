@@ -47,13 +47,12 @@ const JobDescription: React.FC<JobDescription> = ({ uploadedJobDescription, setU
       const response = await axios.post(
         apiEndPoint + API_ENDPOINTS.SCRAPE_URL,
         {
-          url: urlInput,
+          url: urlInput
         },
       );
-
       dispatch({
         type: "SET_JOB_DESCRIPTION",
-        payload: { data: response.data.response, source: "url" },
+        payload: { data: response.data.extracted_text, source: "url" },
       });
     } catch (error) {
       setError("Failed to extract job description from URL");
@@ -65,6 +64,7 @@ const JobDescription: React.FC<JobDescription> = ({ uploadedJobDescription, setU
       });
     }
   };
+
 
   const processResumeFile = async (file: File) => {
 
@@ -98,7 +98,7 @@ const JobDescription: React.FC<JobDescription> = ({ uploadedJobDescription, setU
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    let files = acceptedFiles[0];
+    const files = acceptedFiles[0];
     if (files && files.type === "application/pdf" ||
       files.type ===
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
@@ -145,7 +145,6 @@ const JobDescription: React.FC<JobDescription> = ({ uploadedJobDescription, setU
               onChange={(e) => setUrlInput(e.target.value)}
               placeholder="https://example.com/job-posting"
               sx={{ mb: 4, mt: 1 }}
-              disabled
             />
             <Button
               variant="contained"

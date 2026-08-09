@@ -12,9 +12,10 @@ import {
   Analytics as AnalyticsIcon,
   TrendingUp as TrendingUpIcon,
 } from '@mui/icons-material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { apiEndPoint, prompt } from './Constant';
 import DialogBox from './DialogBox';
+import { useAppContext } from '../context/AppContext';
 
 interface CompareInterface {
   uploadedJobDescription: { file_name: string; base64: string };
@@ -22,11 +23,13 @@ interface CompareInterface {
 }
 
 const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, uploadedResume }) => {
+  const { state } = useAppContext();
   const [comparing, setComparing] = useState('false');
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<object>({});
+  const [isUrl, setIsUrl] = useState(false);
   const handleCompare = async () => {
-    if (!uploadedResume.base64 || !uploadedJobDescription.base64) {
+    if (!uploadedResume.base64 || (isUrl ? !state?.jobDescription?.data : !uploadedJobDescription.base64)) {
       return;
     }
     setComparing('loading');
@@ -34,8 +37,9 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
       const axios = (await import('axios')).default;
       await axios.post(apiEndPoint + '/data-analysis', {
         resume_base64: uploadedResume.base64,
-        jd_base64: uploadedJobDescription.base64,
-        prompt: prompt
+        jd_base64: isUrl ? state?.jobDescription?.data : uploadedJobDescription.base64,
+        prompt: prompt,
+        is_url: isUrl,
       }).then((response) => {
         console.log('Analysis response:', response.data);
         setData(response.data.data);
@@ -48,6 +52,13 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
       // handle error as needed
     }
   }
+
+  useEffect(() => {
+    if(state?.jobDescription){
+      setIsUrl(state?.jobDescription?.source === 'url');
+    }
+  }, [state])
+  
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
@@ -117,7 +128,7 @@ const CompareResumes: React.FC<CompareInterface> = ({ uploadedJobDescription, up
             variant="contained"
             size="large"
             onClick={comparing === 'done' ? () => setOpen(true) : handleCompare}
-            disabled={uploadedResume.file_name === '' || uploadedJobDescription.file_name === ''}
+            disabled={uploadedResume.file_name === '' || (isUrl ? !state?.jobDescription?.data : uploadedJobDescription.file_name === '')}
             startIcon={comparing == 'loading' ? <CircularProgress size={20} color="inherit" /> : <CompareIcon />}
             sx={{
               py: 1.5,
